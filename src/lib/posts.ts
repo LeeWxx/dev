@@ -2,6 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import { PostData, PostMeta, PostDetail } from '@/types';
+import { remark } from 'remark';
+import remarkRehype from 'remark-rehype';
+import rehypeHighlight from 'rehype-highlight';
+import rehypeStringify from 'rehype-stringify';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
 
@@ -44,9 +48,15 @@ export async function getPostData(id: string): Promise<PostDetail> {
 
   // 포스트 메타데이터 파싱
   const matterResult = matter(fileContents);
-  const meta = matterResult.data as PostMeta;
+  const meta = matterResult.data as PostMeta; 
 
-  const contentHtml = matterResult.content.toString();
+  const processedContent = await remark()
+    .use(remarkRehype)
+    .use(rehypeHighlight)
+    .use(rehypeStringify)
+    .process(matterResult.content);
+
+  const contentHtml = processedContent.toString();
 
   return {
     id,
