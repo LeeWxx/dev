@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
-import { PostData, PostMeta } from '@/types';
+import { PostData, PostMeta, PostDetail } from '@/types';
 
 const postsDirectory = path.join(process.cwd(), 'src/content/posts');
 
@@ -37,3 +37,20 @@ export function getSortedPostsData(): PostData[] {
     }
   });
 }
+
+export async function getPostData(id: string): Promise<PostDetail> {
+  const fullPath = path.join(postsDirectory, `${id}.md`);
+  const fileContents = fs.readFileSync(fullPath, 'utf8');
+
+  // 포스트 메타데이터 파싱
+  const matterResult = matter(fileContents);
+  const meta = matterResult.data as PostMeta;
+
+  const contentHtml = matterResult.content.toString();
+
+  return {
+    id,
+    contentHtml,
+    ...meta,
+  };
+} 
