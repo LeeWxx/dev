@@ -4,18 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-
-export interface Post {
-  slug: string
-  title: string
-  desc?: string
-  category: string
-  dateString: string
-  thumbnail?: string
-}
+import { PostData } from '@/types'
 
 interface PostsViewProps {
-  posts: Post[]
+  posts: PostData[] 
 }
 
 export function PostsView({ posts }: PostsViewProps) {
@@ -31,8 +23,8 @@ export function PostsView({ posts }: PostsViewProps) {
         <div className="grid gap-5 sm:grid-cols-2">
           {posts.map((post) => (
             <Link
-              key={post.slug}
-              href={`/blog/${post.category}/${post.slug}`}
+              key={post.id}
+              href={`/blog/${post.id}`}
               className="block transition-colors hover:opacity-90"
             >
               <Card className="h-full overflow-hidden border-0 shadow-sm hover:shadow">
@@ -48,18 +40,26 @@ export function PostsView({ posts }: PostsViewProps) {
                   </div>
                 )}
                 <div className="p-5">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary" className="px-2 py-0.5 text-xs">
-                      {post.category}
-                    </Badge>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2 mb-2">
+                    {post.tags && (
+                      <div className="flex flex-wrap gap-2">
+                        {post.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="px-2 py-0.5 text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    </div>
                     <span className="text-xs text-gray-500 dark:text-gray-400">
-                      {post.dateString}
+                      {post.date}
                     </span>
                   </div>
                   <h3 className="text-lg font-semibold mb-2 line-clamp-2">{post.title}</h3>
-                  {post.desc && (
+                  {post.description && (
                     <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                      {post.desc}
+                      {post.description}
                     </p>
                   )}
                 </div>
