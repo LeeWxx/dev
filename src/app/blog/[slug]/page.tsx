@@ -4,9 +4,9 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 
 interface PostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({
