@@ -121,3 +121,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Markdown content styles */
+.markdown-content :not(pre) > code {
+  @apply bg-gray-200 dark:bg-gray-800 px-1.5 py-0.5 rounded font-mono;
+}
+
+.markdown-content :not(pre) > code::before,
+.markdown-content :not(pre) > code::after {
+  content: none;
+}
