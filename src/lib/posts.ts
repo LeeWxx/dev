@@ -1,26 +1,26 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import { PostData, PostMeta, PostDetail } from '@/types';
-import { remark } from 'remark';
-import remarkRehype from 'remark-rehype';
-import rehypeHighlight from 'rehype-highlight';
-import rehypeStringify from 'rehype-stringify';
+import fs from "fs";
+import path from "path";
+import matter from "gray-matter";
+import { PostData, PostMeta, PostDetail } from "@/types";
+import { remark } from "remark";
+import remarkRehype from "remark-rehype";
+import rehypeHighlight from "rehype-highlight";
+import rehypeStringify from "rehype-stringify";
 
-const postsDirectory = path.join(process.cwd(), 'src/content/posts');
+const postsDirectory = path.join(process.cwd(), "src/content/posts");
 
 export function getSortedPostsData(): PostData[] {
   // 포스트 데이터 가져오기
   const fileNames = fs.readdirSync(postsDirectory);
   const allPostsData = fileNames
-    .filter(fileName => fileName.endsWith('.md'))
-    .map(fileName => {
+    .filter((fileName) => fileName.endsWith(".md"))
+    .map((fileName) => {
       // 파일 이름을 id로 사용
-      const id = fileName.replace(/\.md$/, '');
+      const id = fileName.replace(/\.md$/, "");
 
       // 마크다운 파일을 문자열로 읽기
       const fullPath = path.join(postsDirectory, fileName);
-      const fileContents = fs.readFileSync(fullPath, 'utf8');
+      const fileContents = fs.readFileSync(fullPath, "utf8");
 
       // 포스트 메타데이터 파싱
       const matterResult = matter(fileContents);
@@ -44,16 +44,16 @@ export function getSortedPostsData(): PostData[] {
 
 export async function getPostData(id: string): Promise<PostDetail> {
   const fullPath = path.join(postsDirectory, `${id}.md`);
-  const fileContents = fs.readFileSync(fullPath, 'utf8');
+  const fileContents = fs.readFileSync(fullPath, "utf8");
 
   // 포스트 메타데이터 파싱
   const matterResult = matter(fileContents);
-  const meta = matterResult.data as PostMeta; 
+  const meta = matterResult.data as PostMeta;
 
   const processedContent = await remark()
-    .use(remarkRehype)
+    .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeHighlight)
-    .use(rehypeStringify)
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(matterResult.content);
 
   const contentHtml = processedContent.toString();
@@ -63,4 +63,4 @@ export async function getPostData(id: string): Promise<PostDetail> {
     contentHtml,
     ...meta,
   };
-} 
+}
