@@ -1,6 +1,6 @@
 ---
 title: Tanstack Query 내부 구조 분석
-date: '2024-09-14'
+date: '2025-09-14'
 description: QueryClient부터 Observer까지 Tanstack Query의 구조 파악하기
 thumbnail: '/images/tanstack_query_logo.png'
 tags: ['TanstackQuery', 'OpenSource']
